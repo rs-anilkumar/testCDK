@@ -1,27 +1,43 @@
 {
-  "name": "resources",
+  "name": "git-dhbr-prd-dhbr-test-cdk",
   "version": "0.1.0",
-  "bin": {
-    "resources": "bin/resources.js"
-  },
   "scripts": {
-    "build": "tsc",
+    "prepare": "npm run co:login",
+    "co:login": "npm run co:login:dhbr-prd-dhbr",
+    "co:login:dhbr-prd-dhbr": "aws codeartifact login ${CODEARTIFACT_PROFILE:- --profile ssc-dhbr-prd-devops} --tool npm --repository repository-dhbr-prd-dhbr --domain domain-dhbr-prd --namespace @dhbr-prd-dhbr",
+    "packageRefresh": "rm -rf node_modules/ && rm package-lock.json && npm i",
+    "lint": "npx --node-options=\"--max-old-space-size=2560\" eslint --ext .ts --ignore-pattern '**/*.d.ts' lib",
+    "clean": "rimraf ./lib/**/*.d.ts ./lib/**/*.js ./bin/*.d.ts ./bin/*.js",
+    "build": "npm run clean && npm run lint && npm run tsc && echo 'BUILD SUCCESSFUL! ✅'",
     "watch": "tsc -w",
-    "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "test": "npx --node-options=\"--max-old-space-size=2560\" jest --runInBand --no-cache unit",
+    "test-update": "jest --runInBand --no-cache --updateSnapshot unit",
+    "test-single": "jest --runInBand --no-cache --collectCoverage=false",
+    "tsc": "npx --node-options=\"--max-old-space-size=2560\" tsc --build --extendedDiagnostics"
+  },
+  "test": "jest --passWithNoTests",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rs-anilkumar/testCDK.git"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.12",
-    "@types/node": "22.5.4",
+    "@dhbr-prd-dhbr/git-dhbr-prd-dhbr-cdklib": "7.2.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^25.0.3",
+    "baseline-browser-mapping": "^2.9.11",
+    "esbuild": "^0.27.2",
     "jest": "^29.7.0",
-    "ts-jest": "^29.2.5",
-    "aws-cdk": "2.162.1",
-    "ts-node": "^10.9.2",
-    "typescript": "~5.6.2"
+    "rimraf": "^6.1.2",
+    "ts-jest": "^29.2.5"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.162.1",
-    "constructs": "^10.0.0",
-    "source-map-support": "^0.5.21"
+    "@aws-sdk/client-dynamodb": "^3.958.0",
+    "@aws-sdk/lib-dynamodb": "^3.958.0",
+    "@dhbr-prd-dhbr/git-dhbr-prd-dhbr-commons": "5.3.9",
+    "aws-cdk-lib": "^2.233.0",
+    "aws-xray-sdk": "^3.12.0",
+    "constructs": "^10.4.4",
+    "typescript-eslint": "^8.50.0"
   }
 }
